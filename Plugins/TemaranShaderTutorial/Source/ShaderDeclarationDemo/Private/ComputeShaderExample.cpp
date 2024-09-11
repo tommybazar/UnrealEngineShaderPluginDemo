@@ -3,15 +3,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "ComputeShaderExample.h"
-#include "ShaderParameterUtils.h"
+
+#include "DataDrivenShaderPlatformInfo.h"
 #include "RHIStaticStates.h"
-#include "Shader.h"
-#include "GlobalShader.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
 #include "ShaderParameterStruct.h"
 #include "UniformBuffer.h"
-#include "RHICommandList.h"
 
 #define NUM_THREADS_PER_GROUP_DIMENSION 32
 

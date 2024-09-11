@@ -117,6 +117,6 @@ void FShaderDeclarationDemoModule::Draw_RenderThread(const FShaderUsageExamplePa
 		GRenderTargetPool.FindFreeElement(RHICmdList, ComputeShaderOutputDesc, ComputeShaderOutput, TEXT("ShaderPlugin_ComputeShaderOutput"));
 	}
 
-	FComputeShaderExample::RunComputeShader_RenderThread(RHICmdList, DrawParameters, ComputeShaderOutput->GetRenderTargetItem().UAV);
-	FPixelShaderExample::DrawToRenderTarget_RenderThread(RHICmdList, DrawParameters, ComputeShaderOutput->GetRenderTargetItem().TargetableTexture);
+	FComputeShaderExample::RunComputeShader_RenderThread(RHICmdList, DrawParameters, RHICmdList.CreateUnorderedAccessView(ComputeShaderOutput->GetRHI()));
+	FPixelShaderExample::DrawToRenderTarget_RenderThread(RHICmdList, DrawParameters, ComputeShaderOutput->GetRHI());
 }

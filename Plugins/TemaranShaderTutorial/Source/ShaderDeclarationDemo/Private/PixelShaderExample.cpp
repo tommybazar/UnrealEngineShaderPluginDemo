@@ -3,18 +3,15 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "PixelShaderExample.h"
-#include "ShaderParameterUtils.h"
-#include "RHIStaticStates.h"
-#include "Shader.h"
+
+#include "DataDrivenShaderPlatformInfo.h"
 #include "GlobalShader.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "Runtime/RenderCore/Public/PixelShaderUtils.h"
 #include "ShaderParameterMacros.h"
 #include "ShaderParameterStruct.h"
 #include "UniformBuffer.h"
-#include "RHICommandList.h"
-#include "Containers/DynamicRHIResourceArray.h"
-#include "Runtime/RenderCore/Public/PixelShaderUtils.h"
 
 /************************************************************************/
 /* Simple static vertex buffer.                                         */
@@ -23,7 +20,7 @@ class FSimpleScreenVertexBuffer : public FVertexBuffer
 {
 public:
 	/** Initialize the RHI for this rendering resource */
-	void InitRHI()
+	virtual void InitRHI(FRHICommandListBase& RHICmdList) override
 	{
 		TResourceArray<FFilterVertex, VERTEXBUFFER_ALIGNMENT> Vertices;
 		Vertices.SetNumUninitialized(6);
@@ -42,7 +39,7 @@ public:
 
 		// Create vertex buffer. Fill buffer with initial data upon creation
 		FRHIResourceCreateInfo CreateInfo(TEXT("FRHIResourceCreateInfo"),  & Vertices);
-		VertexBufferRHI = RHICreateVertexBuffer(Vertices.GetResourceDataSize(), BUF_Static, CreateInfo);
+		VertexBufferRHI = RHICmdList.CreateVertexBuffer(Vertices.GetResourceDataSize(), BUF_Static, CreateInfo);
 	}
 };
 TGlobalResource<FSimpleScreenVertexBuffer> GSimpleScreenVertexBuffer;
@@ -130,9 +127,5 @@ void FPixelShaderExample::DrawToRenderTarget_RenderThread(FRHICommandListImmedia
 	// Draw
 	RHICmdList.SetStreamSource(0, GSimpleScreenVertexBuffer.VertexBufferRHI, 0);
 	RHICmdList.DrawPrimitive(0, 2, 1);
-	
-	// Resolve render target
-	RHICmdList.CopyToResolveTarget(DrawParameters.RenderTarget->GetRenderTargetResource()->GetRenderTargetTexture(), DrawParameters.RenderTarget->GetRenderTargetResource()->TextureRHI, FResolveParams());
-
 	RHICmdList.EndRenderPass();
 }
